@@ -1,20 +1,9 @@
 /**
   ******************************************************************************
-  * Author             : Farid Mabrouk
+  * Author             : Farid Mabr
 	* File Name          : main.c
   * Description        : Main program 
   ******************************************************************************/
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* Includes */
@@ -29,24 +18,20 @@ void SystemClock_Config(void);
 void Error_Handler(void);
 
 int main(void)
-{
-
-	
+{	
   /*initialize the HAL Library */
   HAL_Init();
-
-	/*System Clock Config */
+  /*System Clock Config */
   SystemClock_Config();
 	
-	/*SPI Config */
-	SPI3_Config();
-	GPIOs_Config();
+  /*SPI Config */
+  SPI3_Config();
+  GPIOs_Config();
 	
-	/*TIMER3 Config */
-	Timer2_Interrupt_Config();
-	
-  
-	/*wait for interrupts*/
+  /*TIMER3 Config */
+  Timer2_Interrupt_Config();
+
+  /*wait for interrupts*/
   while (1)
   {
   }
@@ -91,13 +76,12 @@ void SystemClock_Config(void)
 
 void Timer2_Interrupt_Config(void)
 {
-	// TIM2 initialization overflow every 500ms
-	// TIM2 by default has clock of 84MHz
+  // TIM2 initialization overflow every 500ms
+  // TIM2 by default has clock of 84MHz
   // After HAL_RCC_OscConfig(&RCC_OscInitStruct) is called SystemCoreClock is updated to 525000000
   // and uwPrescalerValue becomes 26250000
 	
-	
-	uwPrescalerValue = (uint32_t) ((SystemCoreClock /2) / 10000) - 1;
+  uwPrescalerValue = (uint32_t) ((SystemCoreClock /2) / 10000) - 1;
   
   /* Set TIM2 instance */
   Tim2Handle.Instance = TIM2;
@@ -107,13 +91,13 @@ void Timer2_Interrupt_Config(void)
   Tim2Handle.Init.ClockDivision =TIM_CLOCKDIVISION_DIV1;
   Tim2Handle.Init.CounterMode = TIM_COUNTERMODE_UP;
 	
-	if(HAL_TIM_Base_Init(&Tim2Handle) != HAL_OK)
+  if(HAL_TIM_Base_Init(&Tim2Handle) != HAL_OK)
   {
     /* Initialization Error */
     Error_Handler();
   }
   
-	/*Start the TIM Base generation in interrupt mode */
+  /*Start the TIM Base generation in interrupt mode */
   if(HAL_TIM_Base_Start_IT(&Tim2Handle) != HAL_OK)
   {
     /* Starting Error */
