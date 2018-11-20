@@ -1,11 +1,7 @@
 #include "main.h"
 #include "SPI.h"
 
-
 SPI_HandleTypeDef Spi3Handle;
-
-
-
 
 /**
   * SPI2 error handler
@@ -21,13 +17,10 @@ void SPI3Error_Handler(void)
  /**
   * SPI2 Configuration
   */
-void SPI3_Config(void){
-	
-	
-	Spi3Handle.Instance               = SPI3;
-  
-	Spi3Handle.Init.Mode = SPI_MODE_MASTER;
-	
+void SPI3_Config(void)
+{
+  Spi3Handle.Instance               = SPI3;
+  Spi3Handle.Init.Mode = SPI_MODE_MASTER;	
   Spi3Handle.Instance               = SPI3;
   Spi3Handle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256; // 42MHz/256=167kHz < 400kHz
   Spi3Handle.Init.Direction         = SPI_DIRECTION_2LINES;
@@ -38,9 +31,9 @@ void SPI3_Config(void){
   Spi3Handle.Init.DataSize          = SPI_DATASIZE_8BIT;
   Spi3Handle.Init.FirstBit          = SPI_FIRSTBIT_MSB;
   Spi3Handle.Init.NSS               = SPI_NSS_HARD_OUTPUT;
-	Spi3Handle.Init.TIMode            = SPI_TIMODE_DISABLED;
+  Spi3Handle.Init.TIMode            = SPI_TIMODE_DISABLED;
 
-	if(HAL_SPI_Init(&Spi3Handle) != HAL_OK)
+  if(HAL_SPI_Init(&Spi3Handle) != HAL_OK)
   {
     /* Initialization Error */
     SPI3Error_Handler();
@@ -78,7 +71,7 @@ void GPIOs_Config(void)
 
 	HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 	
-  GPIO_InitStruct.Pin       = GPIO_PIN_12;
+        GPIO_InitStruct.Pin       = GPIO_PIN_12;
 	GPIO_InitStruct.Mode      = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull      = GPIO_PULLUP;
 	GPIO_InitStruct.Speed     = GPIO_SPEED_FAST;
