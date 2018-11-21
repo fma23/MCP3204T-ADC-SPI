@@ -42,7 +42,7 @@
 /******************************************************************************/
 
 extern TIM_HandleTypeDef    Tim2Handle;
-volatile bool Timer3Flag=false;
+extern volatile bool ADC_SampleFlag;
 
 
 /**
@@ -135,19 +135,19 @@ void TIM2_IRQHandler(void)
   HAL_TIM_IRQHandler(&Tim2Handle);
 }
 
+void TIM2_IRQHandler(void)
+{
+  HAL_TIM_IRQHandler(&Tim2Handle);
+}
+/**
+* @brief This function handles timer2 interrupt.
+*/
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *Tim2Handle)
 {
-	static uint8_t counter=0;  
-	
-	HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_12);   //toggle an LED
-	
-  MCP3204_ReadRequest(counter);             // Read Channel 0
-
-	counter++;
-	if(counter==0x04)
-	{
-		counter=0; 
-	}
+  if(ADC_SampleFlag==false)                     //this flag is turned off by main while loop once data is read from ADC
+  {
+    ADC_SampleFlag=true;                       //notify main loop that data needs to be sampled
+  }
 	
 }
 
