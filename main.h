@@ -39,14 +39,11 @@
 
 
 
-
-#define SPI3_CS_BM1  
-
-
 /* Functions Declarations -------------------------------------*/
 void Timer2_Interrupt_Config(void);
 void GPIOs_Config(void);
 void SPI3_Config(void);
+void MCP3204_ReadRequest(uint8_t address); 
 
 #endif /* __MAIN_H */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
