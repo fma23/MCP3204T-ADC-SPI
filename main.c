@@ -1,39 +1,55 @@
 /**
   ******************************************************************************
-  * Author             : Farid Mabr
+  * Author             : Farid Mabrouk
 	* File Name          : main.c
   * Description        : Main program 
   ******************************************************************************/
-
 
 /* Includes */
 #include "main.h"
 #include <stdbool.h>
 
-
 TIM_HandleTypeDef Tim2Handle;
-uint32_t uwPrescalerValue=0; ;
+uint32_t uwPrescalerValue=0; 
+volatile bool ADC_SampleFlag=false; 
 
 void SystemClock_Config(void);
 void Error_Handler(void);
 
+
+
 int main(void)
-{	
+{
+  static uint8_t ChannelAddr=0; 
   /*initialize the HAL Library */
   HAL_Init();
-  /*System Clock Config */
+
+ /*System Clock Config */
   SystemClock_Config();
 	
   /*SPI Config */
-  SPI3_Config();
-  GPIOs_Config();
+   SPI3_Config();
+   GPIOs_Config();
 	
-  /*TIMER3 Config */
-  Timer2_Interrupt_Config();
-
-  /*wait for interrupts*/
+  /*TIMER2 Config */
+ Timer2_Interrupt_Config();
+	
+  
+/*wait for interrupts*/
   while (1)
   {
+   if(ADC_SampleFlag==true)                     //this flag is turned ON by timer interrupt to signal it's time to read data from ADC
+   {
+    HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_12);     //toggle an LED jsut for testing/debugging
+    ADC_SampleFlag=true;                       //notify main loop that data needs to be sampled
+    MCP3204_ReadRequest(counter);              // Read Channel 0
+    ADC_SampleFlag=false; 
+    ChannelAddr++; 
+      if(ChannelAddr==0x04)
+      {
+	ChannelAddrr=0; 
+      }			
+   }
   }
 
 }
@@ -78,9 +94,9 @@ void Timer2_Interrupt_Config(void)
 {
   // TIM2 initialization overflow every 500ms
   // TIM2 by default has clock of 84MHz
-  // After HAL_RCC_OscConfig(&RCC_OscInitStruct) is called SystemCoreClock is updated to 525000000
+  // After HAL_RCC_OscConfig(&RCC_OscInitStruct) is called SystemCoreClock value is updated to 525000000
   // and uwPrescalerValue becomes 26250000
-	
+		
   uwPrescalerValue = (uint32_t) ((SystemCoreClock /2) / 10000) - 1;
   
   /* Set TIM2 instance */
@@ -97,7 +113,7 @@ void Timer2_Interrupt_Config(void)
     Error_Handler();
   }
   
-  /*Start the TIM Base generation in interrupt mode */
+	/*Start the TIM Base generation in interrupt mode */
   if(HAL_TIM_Base_Start_IT(&Tim2Handle) != HAL_OK)
   {
     /* Starting Error */
